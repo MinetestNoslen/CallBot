@@ -1,5 +1,6 @@
+--Noslen's CallBot--
 if not init then
-    self.listen(1) -- Enable chat listening for the robot
+    self.listen(1) 
     init = true
 end
 
@@ -14,8 +15,8 @@ if msg then
         if c >= "a" and c <= "z" then
             if c == string.sub(target, step, step) then
                 step = step + 1
-                if step > 5 then
-                    activate.up() -- Triggers the block directly above the robot
+                if step > 6 then
+                    activate.up()
                     break
                 end
             else
