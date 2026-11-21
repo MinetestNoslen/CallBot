@@ -1,33 +1,36 @@
---Noslen's CallBot--
-if not init then
-    self.listen(1) 
-    init = true
-end
+--Noslen's Callbot--
+local TARGET_WORD = "noslen" --Name--
 
-local speaker, msg = self.listen_msg()
-if msg then
-    local lower = string.lower(msg)
-    local target = "noslen" -- Set your target name here
-    local step = 1
+local function containsTargetSequence(text)
+    local cleanText = text:lower():gsub("[^a-z]", "")
+    local matchIndex = 1
 
-    for i = 1, #lower do
-        local c = string.sub(lower, i, i)
-        if c >= "a" and c <= "z" then
-            if c == string.sub(target, step, step) then
-                step = step + 1
-                if step > 6 then
-                    activate.up()
-                    break
-                end
-            else
-                if c == "n" then -- Reset point matching the first letter of your target
-                    step = 2
-                else
-                    step = 1
-                end
+    for i = 1, #cleanText do
+        local currentLetter = cleanText:sub(i, i)
+        local expectedLetter = TARGET_WORD:sub(matchIndex, matchIndex)
+
+        if currentLetter == expectedLetter then
+            matchIndex = matchIndex + 1
+            if matchIndex > #TARGET_WORD then
+                return true
             end
-        elseif c >= "0" and c <= "9" then
-            step = 1
+        elseif currentLetter == TARGET_WORD:sub(1, 1) then
+            matchIndex = 2
+        else
+            matchIndex = 1
         end
     end
+
+    return false
+end
+
+if not isInitialized then
+    self.listen(1)
+    isInitialized = true
+end
+
+local _, message = self.listen_msg()
+
+if message and containsTargetSequence(message) then
+    activate.up()
 end
